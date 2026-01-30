@@ -1,0 +1,7 @@
+export { Hero } from './Hero'
+export { TrustStrip } from './TrustStrip'
+export { ServicesOverview } from './ServicesOverview'
+export { HowItWorks } from './HowItWorks'
+export { Team } from './Team'
+export { FAQ } from './FAQ'
+export { ContactCTA } from './ContactCTA'
