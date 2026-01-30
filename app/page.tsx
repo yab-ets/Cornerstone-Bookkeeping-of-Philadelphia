@@ -3,6 +3,8 @@ import {
   TrustStrip,
   ServicesOverview,
   HowItWorks,
+  ToolsAndDeliverables,
+  Security,
   Team,
   FAQ,
   ContactCTA,
@@ -15,6 +17,8 @@ export default function Home() {
       <TrustStrip />
       <ServicesOverview />
       <HowItWorks />
+      <ToolsAndDeliverables />
+      <Security />
       <Team />
       <FAQ />
       <ContactCTA />

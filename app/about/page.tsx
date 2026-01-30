@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Calculator, Users, CheckCircle, Eye, Heart, Target, Shield, Clock } from 'lucide-react'
+import { Calculator, Users, CheckCircle, Eye, Heart, Target, Shield, Clock, Award, BookOpen, MessageSquare } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { siteConfig } from '@/lib/utils'
-import { ContactCTA } from '@/components/sections'
+import { ContactCTA, Security } from '@/components/sections'
 
 export const metadata: Metadata = {
   title: 'About Us',
@@ -31,6 +31,7 @@ const values = [
 
 const team = [
   {
+    name: 'Sarah',
     icon: Calculator,
     role: 'Bookkeeper & Quality Control',
     responsibilities: [
@@ -40,9 +41,14 @@ const team = [
       'Quality assurance on all work',
       'Tax-ready documentation',
     ],
-    description: 'Every number goes through careful review. Our bookkeeper ensures your financials are accurate, organized, and ready when you need them.',
+    description: 'Every number goes through careful review. Sarah ensures your financials are accurate, organized, and ready when you need them.',
+    credentials: [
+      { icon: BookOpen, text: 'QuickBooks Online ProAdvisor Certified' },
+      { icon: Award, text: '8+ years of small business bookkeeping experience' },
+    ],
   },
   {
+    name: 'Michael',
     icon: Users,
     role: 'Client Success & Onboarding',
     responsibilities: [
@@ -52,7 +58,11 @@ const team = [
       'Question resolution',
       'CPA coordination',
     ],
-    description: 'Your dedicated point of contact for everything. From your first call through ongoing support, you\'ll always have someone responsive and ready to help.',
+    description: 'Your dedicated point of contact for everything. From your first call through ongoing support, Michael is responsive and ready to help.',
+    credentials: [
+      { icon: MessageSquare, text: 'Dedicated to same-day response times' },
+      { icon: Shield, text: 'Background in small business operations & finance' },
+    ],
   },
 ]
 
@@ -159,17 +169,33 @@ export default function AboutPage() {
             {team.map((member) => (
               <Card key={member.role} className="overflow-hidden">
                 <div className="p-8">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-blue/10 text-primary-blue">
-                    <member.icon className="h-7 w-7" aria-hidden="true" />
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-blue/10 text-primary-blue">
+                      <member.icon className="h-7 w-7" aria-hidden="true" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-primary-navy">
+                        {member.name}
+                      </h3>
+                      <p className="text-sm text-text-muted">{member.role}</p>
+                    </div>
                   </div>
-                  <h3 className="mt-4 text-xl font-semibold text-primary-navy">
-                    {member.role}
-                  </h3>
-                  <p className="mt-3 text-text-muted">
+                  <p className="mt-4 text-text-muted">
                     {member.description}
                   </p>
+                  {/* Credentials */}
+                  <div className="mt-6 space-y-3">
+                    {member.credentials.map((cred, idx) => (
+                      <div key={idx} className="flex items-center gap-3 text-sm">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-green/10 text-accent-green flex-shrink-0">
+                          <cred.icon className="h-4 w-4" aria-hidden="true" />
+                        </div>
+                        <span className="text-text-primary">{cred.text}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="bg-background p-8 border-t border-border">
+                <div className="bg-background p-6 border-t border-border">
                   <h4 className="text-sm font-semibold text-primary-navy uppercase tracking-wider mb-4">
                     Key Responsibilities
                   </h4>
@@ -196,8 +222,11 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Security Section */}
+      <Security />
+
       {/* Why Choose Us Section */}
-      <section className="section-padding bg-background">
+      <section className="section-padding bg-white">
         <div className="container-default">
           <div className="text-center max-w-2xl mx-auto">
             <h2 className="text-3xl font-bold text-primary-navy">

@@ -1,17 +1,18 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { FileText, RefreshCw, Receipt, Check, X, ArrowRight } from 'lucide-react'
+import { FileText, RefreshCw, Receipt, Check, X, ArrowRight, Shield } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion'
 import { siteConfig } from '@/lib/utils'
-import { ContactCTA } from '@/components/sections'
+import { ContactCTA, Security } from '@/components/sections'
 
 export const metadata: Metadata = {
   title: 'Services',
   description: 'Professional bookkeeping services for Philadelphia-area small businesses. Monthly bookkeeping, cleanup & catch-up, and invoicing support.',
 }
 
-const services = [
+const coreServices = [
   {
     icon: FileText,
     title: 'Monthly Bookkeeping',
@@ -41,21 +42,25 @@ const services = [
     ],
     idealFor: 'Businesses that have fallen behind or inherited messy books.',
   },
-  {
-    icon: Receipt,
-    title: 'Invoicing & A/R Tracking',
-    description: 'An optional add-on to streamline your invoicing workflow and keep track of what\'s owed to you.',
-    included: [
-      'Invoice workflow setup and optimization',
-      'Create and send invoices on your behalf',
-      'Track unpaid invoices and payment status',
-      'Basic follow-up system for overdue accounts',
-      'Monthly A/R aging report',
-    ],
-    idealFor: 'Businesses that invoice clients and want help tracking receivables.',
-    isAddOn: true,
-  },
 ]
+
+const addOnService = {
+  icon: Receipt,
+  title: 'Invoicing & A/R Tracking',
+  description: 'Help managing your invoicing workflow and tracking what\'s owed to you. Available as an add-on to Monthly Bookkeeping.',
+  included: [
+    'Set up or optimize your invoice templates',
+    'Track outstanding invoices in your accounting software',
+    'Provide a monthly A/R aging summary',
+    'Flag overdue invoices for your follow-up',
+  ],
+  notIncluded: [
+    'We don\'t collect payments on your behalf',
+    'We don\'t make collection calls',
+    'We don\'t handle disputes with customers',
+  ],
+  idealFor: 'Businesses that invoice clients and want help staying organized.',
+}
 
 const notIncluded = [
   'Tax preparation or filing',
@@ -63,6 +68,29 @@ const notIncluded = [
   'Payroll processing',
   'Financial advising or investment guidance',
   'Legal or compliance advice',
+]
+
+const servicesFaqs = [
+  {
+    question: 'How long does cleanup take?',
+    answer: 'It depends on how far behind you are and the complexity of your transactions. Most cleanups take 2-4 weeks. During our initial call, we\'ll review your situation and give you a realistic timeline.',
+  },
+  {
+    question: 'Do I need to use QuickBooks Online?',
+    answer: 'We work primarily with QuickBooks Online because it\'s reliable, widely supported, and makes collaboration with your CPA easy. If you\'re on a different platform, let us know—we can often accommodate Xero and discuss other options.',
+  },
+  {
+    question: 'What if I have questions during the month?',
+    answer: 'Just reach out! Email is best for most questions, and we typically respond the same day. For anything urgent or complex, we\'re happy to hop on a quick call.',
+  },
+  {
+    question: 'Can I start with cleanup and then switch to monthly?',
+    answer: 'Yes, that\'s a common path. Many clients come to us needing a cleanup first, then transition to monthly bookkeeping once we\'ve got everything organized.',
+  },
+  {
+    question: 'What\'s the difference between bookkeeping and accounting?',
+    answer: 'Bookkeeping is the day-to-day recording of financial transactions—categorizing expenses, reconciling accounts, and producing reports. Accounting includes higher-level analysis, tax strategy, and financial planning. We focus on bookkeeping; your CPA handles the rest.',
+  },
 ]
 
 export default function ServicesPage() {
@@ -82,74 +110,141 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* Services Detail Section */}
-      <section className="section-padding bg-white">
+      {/* Core Services Section */}
+      <section className="section-padding bg-white" aria-labelledby="core-services-heading">
         <div className="container-default">
-          <div className="space-y-16">
-            {services.map((service, index) => (
-              <div
+          <h2 id="core-services-heading" className="text-2xl font-bold text-primary-navy mb-8">
+            Core Services
+          </h2>
+          <div className="space-y-12">
+            {coreServices.map((service) => (
+              <Card
                 key={service.title}
                 id={service.title.toLowerCase().replace(/\s+/g, '-')}
-                className="scroll-mt-24"
+                className="overflow-hidden scroll-mt-24"
               >
-                <Card className="overflow-hidden">
-                  <div className="md:flex">
-                    {/* Service Info */}
-                    <div className="md:w-1/2 p-8 md:p-10">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-blue/10 text-primary-blue">
-                          <service.icon className="h-6 w-6" aria-hidden="true" />
-                        </div>
-                        {service.isAddOn && (
-                          <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-accent-green/10 text-accent-green">
-                            Optional Add-on
-                          </span>
-                        )}
-                      </div>
-                      <h2 className="mt-4 text-2xl font-bold text-primary-navy">
-                        {service.title}
-                      </h2>
-                      <p className="mt-3 text-text-muted">
-                        {service.description}
-                      </p>
-                      <div className="mt-6 p-4 bg-background rounded-xl">
-                        <p className="text-sm font-medium text-primary-navy">
-                          Ideal for:
-                        </p>
-                        <p className="mt-1 text-sm text-text-muted">
-                          {service.idealFor}
-                        </p>
-                      </div>
+                <div className="md:flex">
+                  {/* Service Info */}
+                  <div className="md:w-1/2 p-8 md:p-10">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-blue/10 text-primary-blue">
+                      <service.icon className="h-6 w-6" aria-hidden="true" />
                     </div>
-
-                    {/* What's Included */}
-                    <div className="md:w-1/2 bg-background p-8 md:p-10">
-                      <h3 className="text-lg font-semibold text-primary-navy mb-4">
-                        What&apos;s Included
-                      </h3>
-                      <ul className="space-y-3">
-                        {service.included.map((item) => (
-                          <li key={item} className="flex items-start gap-3">
-                            <Check className="h-5 w-5 text-accent-green flex-shrink-0 mt-0.5" aria-hidden="true" />
-                            <span className="text-text-muted">{item}</span>
-                          </li>
-                        ))}
-                      </ul>
+                    <h3 className="mt-4 text-2xl font-bold text-primary-navy">
+                      {service.title}
+                    </h3>
+                    <p className="mt-3 text-text-muted">
+                      {service.description}
+                    </p>
+                    <div className="mt-6 p-4 bg-background rounded-xl">
+                      <p className="text-sm font-medium text-primary-navy">
+                        Ideal for:
+                      </p>
+                      <p className="mt-1 text-sm text-text-muted">
+                        {service.idealFor}
+                      </p>
                     </div>
                   </div>
-                </Card>
-              </div>
+
+                  {/* What's Included */}
+                  <div className="md:w-1/2 bg-background p-8 md:p-10">
+                    <h4 className="text-lg font-semibold text-primary-navy mb-4">
+                      What&apos;s Included
+                    </h4>
+                    <ul className="space-y-3">
+                      {service.included.map((item) => (
+                        <li key={item} className="flex items-start gap-3">
+                          <Check className="h-5 w-5 text-accent-green flex-shrink-0 mt-0.5" aria-hidden="true" />
+                          <span className="text-text-muted">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
+      {/* Optional Add-On Section */}
+      <section className="section-padding bg-background" aria-labelledby="addon-heading">
+        <div className="container-default">
+          <h2 id="addon-heading" className="text-2xl font-bold text-primary-navy mb-8">
+            Optional Add-On
+          </h2>
+          <Card
+            id="invoicing-ar-tracking"
+            className="overflow-hidden scroll-mt-24"
+          >
+            <div className="lg:flex">
+              {/* Service Info */}
+              <div className="lg:w-1/2 p-8 md:p-10">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent-green/10 text-accent-green">
+                    <addOnService.icon className="h-6 w-6" aria-hidden="true" />
+                  </div>
+                  <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-accent-green/10 text-accent-green">
+                    Add-on to Monthly Bookkeeping
+                  </span>
+                </div>
+                <h3 className="mt-4 text-2xl font-bold text-primary-navy">
+                  {addOnService.title}
+                </h3>
+                <p className="mt-3 text-text-muted">
+                  {addOnService.description}
+                </p>
+                <div className="mt-6 p-4 bg-white rounded-xl">
+                  <p className="text-sm font-medium text-primary-navy">
+                    Ideal for:
+                  </p>
+                  <p className="mt-1 text-sm text-text-muted">
+                    {addOnService.idealFor}
+                  </p>
+                </div>
+              </div>
+
+              {/* What's Included / Not Included */}
+              <div className="lg:w-1/2 p-8 md:p-10 bg-white">
+                <div className="space-y-8">
+                  <div>
+                    <h4 className="text-lg font-semibold text-primary-navy mb-4">
+                      What&apos;s Included
+                    </h4>
+                    <ul className="space-y-3">
+                      {addOnService.included.map((item) => (
+                        <li key={item} className="flex items-start gap-3">
+                          <Check className="h-5 w-5 text-accent-green flex-shrink-0 mt-0.5" aria-hidden="true" />
+                          <span className="text-text-muted">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="pt-6 border-t border-border">
+                    <h4 className="text-sm font-semibold text-text-muted uppercase tracking-wider mb-4">
+                      Please Note
+                    </h4>
+                    <ul className="space-y-2">
+                      {addOnService.notIncluded.map((item) => (
+                        <li key={item} className="flex items-start gap-3 text-sm">
+                          <span className="h-1.5 w-1.5 rounded-full bg-text-muted flex-shrink-0 mt-2" aria-hidden="true" />
+                          <span className="text-text-muted">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </section>
+
       {/* What We Don't Do Section */}
-      <section className="section-padding bg-background">
+      <section className="section-padding bg-white" aria-labelledby="not-included-heading">
         <div className="container-default">
           <div className="max-w-3xl mx-auto">
             <Card className="p-8 md:p-10">
-              <h2 className="text-2xl font-bold text-primary-navy text-center">
+              <h2 id="not-included-heading" className="text-2xl font-bold text-primary-navy text-center">
                 What We Don&apos;t Do
               </h2>
               <p className="mt-4 text-text-muted text-center">
@@ -163,9 +258,10 @@ export default function ServicesPage() {
                   </li>
                 ))}
               </ul>
-              <div className="mt-8 p-4 bg-primary-blue/5 rounded-xl">
-                <p className="text-center text-text-muted">
-                  <span className="font-medium text-primary-navy">Working with a CPA?</span> We collaborate seamlessly with your tax preparer to ensure your books are accurate and tax-ready.
+              <div className="mt-8 p-4 bg-primary-blue/5 rounded-xl flex items-start gap-3">
+                <Shield className="h-5 w-5 text-primary-blue flex-shrink-0 mt-0.5" aria-hidden="true" />
+                <p className="text-text-muted">
+                  <span className="font-medium text-primary-navy">Working with a CPA?</span> We collaborate seamlessly with your tax preparer to ensure your books are accurate and tax-ready. We&apos;ll provide any reports or documentation they need.
                 </p>
               </div>
             </Card>
@@ -173,17 +269,20 @@ export default function ServicesPage() {
         </div>
       </section>
 
+      {/* Security Section */}
+      <Security />
+
       {/* Pricing Preview */}
-      <section className="section-padding bg-white">
+      <section className="section-padding bg-background" aria-labelledby="pricing-heading">
         <div className="container-default">
           <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-primary-navy">
+            <h2 id="pricing-heading" className="text-3xl font-bold text-primary-navy">
               Transparent Pricing
             </h2>
             <p className="mt-4 text-lg text-text-muted">
               We offer straightforward monthly pricing with no hidden fees. Your rate depends on your business size and transaction volume.
             </p>
-            <div className="mt-8 p-8 bg-background rounded-2xl">
+            <div className="mt-8 p-8 bg-white rounded-2xl border border-border shadow-card">
               <p className="text-sm text-text-muted uppercase tracking-wider">Monthly Bookkeeping</p>
               <p className="mt-2 text-4xl font-bold text-primary-navy">Starting at $300<span className="text-lg font-normal text-text-muted">/month</span></p>
               <p className="mt-4 text-text-muted">
@@ -198,6 +297,31 @@ export default function ServicesPage() {
                 </Link>
               </Button>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Services FAQ */}
+      <section className="section-padding bg-white" aria-labelledby="services-faq-heading">
+        <div className="container-default">
+          <div className="text-center max-w-2xl mx-auto">
+            <h2 id="services-faq-heading" className="text-3xl font-bold text-primary-navy">
+              Common Questions
+            </h2>
+            <p className="mt-4 text-text-muted">
+              More questions about how our services work.
+            </p>
+          </div>
+
+          <div className="mt-12 max-w-3xl mx-auto">
+            <Accordion type="single">
+              {servicesFaqs.map((faq, index) => (
+                <AccordionItem key={index} value={`services-faq-${index}`}>
+                  <AccordionTrigger>{faq.question}</AccordionTrigger>
+                  <AccordionContent>{faq.answer}</AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
           </div>
         </div>
       </section>
